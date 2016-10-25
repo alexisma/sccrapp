@@ -1,0 +1,23 @@
+{
+  "name": "soccerstandingsapp",
+  "version": "1.3.0",
+  "main":"app/controllers/index.js",
+  "description": "App to track games and stats about soccer ",
+  "author": {
+    "name": "Alexis Maldonado"
+  },
+  "dependencies": {
+    "morgan":"~1.5.0",
+    "express":"~4.10.3",
+    "body-parser":"~1.9.3",
+    "mongoose":"~3.8.19",
+    "bcrypt-nodejs":"0.0.3",
+    "browser-sync": "^2.12.10",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^3.1.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-ruby-sass": "^2.0.6",
+    "gulp-uglify": "^1.5.3"
+  }
+}
