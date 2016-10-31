@@ -15,7 +15,7 @@ const pug = require('pug');
 
 
 //Import controller Routers
-var usersRouter =  require('./Users.js')
+var Users =  require('./Users.js')
 var tokens = require('./Tokens.js');
 
 
@@ -40,22 +40,10 @@ app.use(function(req, res, next) {res.setHeader('Access-Control-Allow-Origin', '
     next();
 });
 
-
-var countUsers = function () {
-    var promise = new Promise((resolve, reject) => {
-            User.count({}, function (error, count) {
-            if (error) reject("errorCounting");
-            resolve(count);
-        });
-    });
-    return promise;
-}
-
+//Loads index.html
 app.get('/', function(req, res) {
-    var userCount = 4;
-    var countPromise = countUsers();
+    var countPromise = Users.countUsers();
     countPromise.then(function (count) {
-        console.log("count = " + count);
         res.render(path.join(__dirname + '../../views/index.pug'),{userCount:count});
     });
 });
@@ -69,7 +57,6 @@ router.post('/authenticate', function (request, response) {
         } else {
             if (user) {
                 if (user.comparePass(request.body.password)) {
-                    // var token = jwt.sign({username:user.username}, tokenKey, {expiresInSeconds:1});
                     var token = tokens.generateToken(request.body.username);
                     return response.json({message: 'Login successful', user:user, token:token});
                 } else {
@@ -84,6 +71,6 @@ router.post('/authenticate', function (request, response) {
 
 
 app.use('/api',router);
-app.use('/users',usersRouter);
+app.use('/users',Users.router);
 app.listen(port);
 console.log('Listening through port: ' + port);

@@ -2,14 +2,15 @@
  * User's controller to retrieve and save data.
  */
 var express = require('express');
-var usersRouter = express.Router();
+var router = express.Router();
 var tokens = require('./Tokens.js');
 //Model Imports
 var User = require('../models/User.js')
+exports = module.exports = {};
 
-usersRouter.use(tokens.checkToken);
+router.use(tokens.checkToken);
 
-usersRouter.use('/create', function (request, response, next) {
+router.use('/create', function (request, response, next) {
     const MIN_SIZE_PASS = 6;
     const MIN_SIZE_USERNAME = 3;
     if(!request.body.password || request.body.password.length < MIN_SIZE_PASS){
@@ -21,7 +22,7 @@ usersRouter.use('/create', function (request, response, next) {
     next();
 });
 
-usersRouter.post('/create',function(request, response){
+router.post('/create',function(request, response){
     var user = new User();
     user.name = request.body.name;
     user.username = request.body.username;
@@ -40,7 +41,7 @@ usersRouter.post('/create',function(request, response){
 });
 
 
-usersRouter.get('/list',function (request,response) {
+router.get('/list',function (request, response) {
     User.find(function (error,users) {
         if(error){
             response.json({error:'errorfind', message:'Error at retrieving users data'})
@@ -51,7 +52,7 @@ usersRouter.get('/list',function (request,response) {
 });
 
 
-usersRouter.get('/find/:id',function (request,response) {
+router.get('/find/:id',function (request, response) {
     console.log(request.params.id);
     User.findById(request.params.id, function (error, user) {
         if(error){
@@ -62,7 +63,7 @@ usersRouter.get('/find/:id',function (request,response) {
     });
 });
 
-usersRouter.post('/remove/:id',function (request,response) {
+router.post('/remove/:id',function (request, response) {
     console.log(request.params.id);
     User.remove({_id:request.params.id}, function (error, user) {
         if(error){
@@ -73,7 +74,7 @@ usersRouter.post('/remove/:id',function (request,response) {
     });
 });
 
-usersRouter.post('/update/:id',function (request,response) {
+router.post('/update/:id',function (request, response) {
     User.findById(request.params.id, function (error, user) {
         if(error){
             response.json({error:'errorfind', message:'Error at retrieving user data'})
@@ -92,4 +93,14 @@ usersRouter.post('/update/:id',function (request,response) {
     });
 });
 
-module.exports = usersRouter;
+exports.router = router;
+
+exports.countUsers = function () {
+    var promise = new Promise((resolve, reject) => {
+            User.count({}, function (error, count) {
+            if (error) resolve(0);  
+            resolve(count);
+        });
+});
+    return promise;
+}
